@@ -1,0 +1,88 @@
+openapi: "3.0.1"
+info:
+  title: "api-test-technique"
+  version: "1.0"
+servers:
+- url: "https://4ovqmd9fa3.execute-api.ca-central-1.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "Prod"
+paths:
+  /friends:
+    get:
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/user"    
+      security:
+      - Auht0Authorizer: []
+  /profile/{id}:
+    description: "You need to remove the auth0| prefix from the id before doing the request!"
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+      security:
+      - Auht0Authorizer: []
+  /usernames:
+    get:
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+      security:
+      - Auht0Authorizer: []
+      
+components:
+  schemas:
+    user:
+      required:
+      - "hireDate"
+      - "id"
+      - "jobTitle"
+      - "location"
+      - "name"
+      - "nbOfPosts"
+      - "username"
+      type: "object"
+      properties:
+        hireDate:
+          type: "string"
+          format: "date"
+        jobTitle:
+          type: "string"
+        name:
+          type: "string"
+        nbOfPosts:
+          type: "integer"
+        location:
+          type: "string"
+        id:
+          type: "string"
+        username:
+          type: "string"
+  securitySchemes:
+    Auht0Authorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
