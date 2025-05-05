@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Known Issues and alternatives
 
-## Getting Started
+During development, I ran into an issue where, after login, Auth0 tried to redirect to the base URL on callback, causing a 404 error. The base implementation was made using the [official guide](https://auth0.com/docs/quickstart/webapp/nextjs/interactive#add-the-authentication-middleware), while also consulting [Auth0's GitHub page for the NextJS SDK](https://github.com/auth0/nextjs-auth0?tab=readme-ov-file).
 
-First, run the development server:
+This is apparently a known issue from the Auth0 team, as seen in [this community post](https://community.auth0.com/t/next-js-callback-404-not-found-error/186208). Other users experienced similar issues as [seen here](https://community.auth0.com/t/404-error-when-following-basic-setup-instructions/132231). I wasn't able to find a solution for this. The solution posted by Auth0 at the community post linked above didn't work. No other solutions were found. The implementation was kept in the code, in the `/api/auth` folder, and can be accessed on the same URL - though due to the unsolved issue, the style will be improper and the user's list from the alternative DB will show in the left.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Since authentication was key to receiving the data from the API, this was a major block in development. In order to be able to continue with the task, I mocked the expected data, infering the schema from the images in the repository, and proceeded to developing the dashboard without real data from the API. I used a simple database stored on Neon, and used Prisma in the application to access the DB. The mock data, as well as a simple script to load the data into the DB are in the `/db` folder. The connection string to the DB is on the `env.example` file.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To simulate the slow response from the `/friends` endpoint, I used a simple timeout function inside the component, allowing the use of a loader message.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Important
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Some of the packages used are not yet fully compatible with React 19. To avoid errors, use the flag `--legacy-peer-deps` when installing the packages: `npm i --legacy-peer-deps`.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Context
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Using the meta framework of your choice (NextJS, SvelteKit, etc), perform the following tasks. If you discover any anomalies, take note of them and let us know 😉 Please note that you are encouraged to use AI productivity tools such as Cursor and GitHub Copilot.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Task 1
 
-## Deploy on Vercel
+You will be provided with the credentials for an existing Auth0 account. Create a login page along with the associated logic to implement the Authorization Code Flow. If possible, avoid using libraries like next-auth — the goal is to validate your understanding of the protocol. Keep the design of the login page as minimal as possible.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> 📝 You don’t need to implement JWT validation — the logic is already provided in `utils/validate-jwt.ts`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<img src="https://s3.ca-central-1.amazonaws.com/thirdbridge.ca/take-home-assets/login-flow.png" alt="Login flow" width="600">
+
+## Task 2
+
+Create a Dashboard page respecting the following dimensions:
+
+<img src="https://s3.ca-central-1.amazonaws.com/thirdbridge.ca/take-home-assets/dashboard-display.png" alt="Dashboard display" width="600">
+
+## Task 3
+
+Implement the ‘My Profile’ section using the `/profile/{id}` endpoint.
+
+<img src="https://s3.ca-central-1.amazonaws.com/thirdbridge.ca/take-home-assets/my-profile.png" alt="My Profile" width="600">
+
+## Task 4
+
+Implement the ‘My Friends’ section using the `/friends` endpoint. Note that the developers poorly modeled the social network and that this call is particularly slow.
+
+<img src="https://s3.ca-central-1.amazonaws.com/thirdbridge.ca/take-home-assets/my-friends.png" alt="Login flow" width="600">
